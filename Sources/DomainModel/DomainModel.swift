@@ -133,7 +133,7 @@ public class Person {
     var firstName : String
     var lastName : String
     var age : Int
-    private var _job: Job?
+    var _job: Job?
         var job: Job? {
             get {
                 return _job
@@ -145,7 +145,7 @@ public class Person {
             }
         }
 
-    private var _spouse: Person?
+    var _spouse: Person?
     var spouse: Person? {
         get {
             return _spouse
@@ -162,7 +162,6 @@ public class Person {
         self.lastName = ln
         self.age = a
     }
-    // "[Person: firstName:Ted lastName:Neward age:45 job:nil spouse:nil]"
     
     func toString() -> String {
         return "[Person: firstName:\(firstName) lastName:\(lastName) age:\(age) job:\(job?.title ?? "nil") spouse:\(spouse?.firstName ?? "nil")]"
@@ -172,5 +171,33 @@ public class Person {
 ////////////////////////////////////
 // Family
 //
-//public class Family {
-//}
+public class Family {
+    var members = [Person]()
+    
+    init(spouse1 : Person, spouse2 : Person) {
+        if spouse1._spouse == nil && spouse2._spouse == nil {
+            members.append(spouse1)
+            members.append(spouse2)
+            spouse1._spouse = spouse2
+            spouse2._spouse = spouse1
+        }
+    }
+    
+    func haveChild(_ child: Person) -> Bool {
+        if members.count >= 2 && (members[0].age >= 21 || members[1].age >= 21 ) {
+            members.append(child)
+            return true
+        }
+        return false
+    }
+    
+    func householdIncome() -> Int {
+        var income : Int = 0
+        for member in members {
+            if let job = member.job {
+                income += job.calculateIncome(2000)
+            }
+        }
+        return income
+    }
+}
