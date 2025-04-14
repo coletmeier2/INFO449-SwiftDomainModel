@@ -92,20 +92,85 @@ public class Job {
         case Salary(UInt)
     }
     
-    init (title: String, type: JobType) {
-        self.title = title
-        self.type = type
+    init (title t: String, type ty: JobType) {
+        self.title = t
+        self.type = ty
+    }
+    
+    func calculateIncome(_ hours : Int) -> Int {
+        switch self.type {
+        case .Hourly(let hourly):
+            return Int(hourly * Double(hours))
+        case .Salary(let salary):
+            return Int(salary)
+        }
+    }
+    
+    func raise(byAmount amount: Double) {
+        switch self.type {
+        case .Hourly(let hourly):
+            self.type = .Hourly(hourly + amount)
+        case .Salary(let salary):
+            self.type = .Salary(UInt(Double(salary) + amount))
+        }
+    }
+    
+    func raise(byPercent percent: Double) {
+        switch self.type {
+        case .Hourly(let hourly):
+            self.type = .Hourly(hourly * (1 + percent))
+        case .Salary(let salary):
+            let newSalary = UInt(Double(salary) * (1 + percent))
+            self.type = .Salary(newSalary)
+        }
     }
 }
 //
 //////////////////////////////////////
 //// Person
 ////
-//public class Person {
-//}
+public class Person {
+    var firstName : String
+    var lastName : String
+    var age : Int
+    private var _job: Job?
+        var job: Job? {
+            get {
+                return _job
+            }
+            set {
+                if age >= 16 {
+                    _job = newValue
+                }
+            }
+        }
+
+    private var _spouse: Person?
+    var spouse: Person? {
+        get {
+            return _spouse
+        }
+        set {
+            if age >= 18 {
+                _spouse = newValue
+            }
+        }
+    }
+    
+    init(firstName fn: String, lastName ln: String, age a: Int) {
+        self.firstName = fn
+        self.lastName = ln
+        self.age = a
+    }
+    // "[Person: firstName:Ted lastName:Neward age:45 job:nil spouse:nil]"
+    
+    func toString() -> String {
+        return "[Person: firstName:\(firstName) lastName:\(lastName) age:\(age) job:\(job?.title ?? "nil") spouse:\(spouse?.firstName ?? "nil")]"
+    }
+}
+
+////////////////////////////////////
+// Family
 //
-//////////////////////////////////////
-//// Family
-////
 //public class Family {
 //}
