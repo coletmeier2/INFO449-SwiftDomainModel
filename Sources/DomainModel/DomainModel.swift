@@ -124,6 +124,16 @@ public class Job {
             self.type = .Salary(newSalary)
         }
     }
+    
+    func convert() {
+        switch self.type {
+        case .Hourly(let hourly):
+            let yearly = hourly * 2000
+            self.type = .Salary(UInt(yearly))
+        case .Salary:
+            break
+        }
+    }
 }
 //
 //////////////////////////////////////
